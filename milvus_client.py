@@ -3,8 +3,9 @@ from typing import List, Dict, Any
 import os
 from config import CLUSTER_ENDPOINT, TOKEN
 
-# Singleton client instance
+# Singleton instances
 _milvus_client = None
+_embedding_model = None
 
 
 def create_milvus_client() -> MilvusClient:
@@ -26,28 +27,43 @@ def get_client() -> MilvusClient:
 
 
 def get_embedding_model() -> Any:
-    return milvus_model.DefaultEmbeddingFunction()
+    global _embedding_model
+    if _embedding_model is None:
+        _embedding_model = milvus_model.DefaultEmbeddingFunction()
+    return _embedding_model
 
 
 def search_similar_texts(
     question: str,
     top_k: int
 ) -> str:
+    try:
+        milvus_client = get_client()
+        embedding_model = get_embedding_model()
+        collection_name = "my_rag_collection"
 
-    milvus_client = get_client()
+        # Optimized search parameters for better performance
+        search_params = {
+            "metric_type": "IP",  # Inner Product similarity metric
+            "params": {
+                "nprobe": 10,     # Number of clusters to search
+                "ef": 64          # Higher ef value = better recall but slower search
+            }
+        }
 
-    embedding_model = get_embedding_model()
+        search_results = milvus_client.search(
+            collection_name=collection_name,
+            data=embedding_model.encode_queries([question]),
+            limit=top_k,
+            search_params=search_params,
+            output_fields=["text"],
+        )
 
-    collection_name = "my_rag_collection"
+        if not search_results or not search_results[0]:
+            return "No relevant context found."
 
-    search_results = milvus_client.search(
-        collection_name=collection_name,
-        data=embedding_model.encode_queries([question]),
-        limit=top_k,
-        search_params={"metric_type": "IP", "params": {}},
-        output_fields=["text"],
-    )
-
-    return "\n".join([
-        res["entity"]["text"] for res in search_results[0]
-    ])
+        return "\n".join([
+            res["entity"]["text"] for res in search_results[0]
+        ])
+    except Exception as e:
+        raise Exception(f"Error during Milvus search: {str(e)}")
