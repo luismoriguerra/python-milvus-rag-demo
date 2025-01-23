@@ -4,4 +4,4 @@ python-dotenv==1.0.1
 flake8==7.0.0
 black==24.2.0
 openai==1.60.0
-pymilvus==2.3.6 
+pymilvus==2.3.9
