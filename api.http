@@ -32,3 +32,11 @@ Content-Type: application/json
 }
 
 ###
+Post http://0.0.0.0:8000/ask
+Content-Type: application/json
+
+{
+    "question": "tell me something funny about milvus"
+}
+
+###
