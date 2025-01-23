@@ -12,6 +12,11 @@ class QuestionRequest(BaseModel):
 
 class OpenRouterLLM:
     def __init__(self, base_url: str, api_key: str):
+        if base_url is None:
+            raise Exception("base_url is not set")
+        if api_key is None:
+            raise Exception("api_key is not set")
+
         self.client = OpenAI(
             base_url=base_url,
             api_key=api_key,
