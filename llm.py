@@ -1,5 +1,7 @@
 from openai import OpenAI
 
+model = "meta-llama/llama-3.2-1b-instruct"
+
 class OpenRouterLLM:
     def __init__(self, base_url: str, api_key: str):
         if base_url is None:
@@ -21,7 +23,7 @@ class OpenRouterLLM:
     
     def generate_response(self, system_prompt: str, user_prompt: str) -> str:
         response = self.client.chat.completions.create(
-            model="deepseek/deepseek-chat",
+            model=model,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
