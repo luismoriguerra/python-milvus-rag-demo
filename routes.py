@@ -14,9 +14,6 @@ llm_client = OpenRouterLLM(
     api_key=config.OPENROUTER_API_KEY
 )
 
-milvus = milvus_client.create_milvus_client()
-embedding_model = milvus_client.get_embedding_model()
-
 @router.get("/")
 def read_root() -> Dict[str, str]:
     return {"message": "Welcome to my API"}
@@ -30,11 +27,8 @@ def ask_question(request: QuestionRequest) -> Dict[str, str]:
     try:
         # Get relevant context from Milvus
         context = milvus_client.search_similar_texts(
-            client=milvus,
-            collection_name=request.collection_name,
             question=request.question,
             top_k=request.top_k,
-            embedding_model=embedding_model
         )
 
         # Create RAG prompt using template
