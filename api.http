@@ -23,5 +23,12 @@ Content-Type: application/json
 {
     "question": "How is data stored in milvus?"
 }
+###
+Post http://0.0.0.0:8000/ask
+Content-Type: application/json
+
+{
+    "question": "tell me something interesting about milvus"
+}
 
 ###
