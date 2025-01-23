@@ -12,8 +12,7 @@ Post http://0.0.0.0:8000/ask
 Content-Type: application/json
 
 {
-    "question": "What is the capital of France?",
-    "system_prompt": "You are a helpful AI assistant." 
+    "question": "How is data stored in milvus?"
 }
 
 ###
