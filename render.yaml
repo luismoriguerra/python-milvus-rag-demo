@@ -6,4 +6,6 @@ services:
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
-        value: 3.12 
+        value: 3.12
+      - key: OPENROUTER_API_KEY
+        sync: false # This makes it a secret environment variable 
